@@ -5,7 +5,7 @@ import seaborn as sns
 from pathlib import Path
 import re
 
-plt.rcParams["figure.dpi"] = 400
+plt.rcParams["figure.dpi"] = 600
 plt.rcParams["figure.figsize"] = (10, 6)
 plt.rcParams["figure.autolayout"] = True
 sns.set_theme(style="whitegrid", palette="viridis", context="paper")
@@ -88,7 +88,7 @@ def plot_stokes_comparison(directory="results/St", figureDir="results/St"):
     plt.close("all")
 
 
-def plot_dt_analysis_completa(
+def plot_dt_analysis(
     directory="results/Dt", figureDir="results/Dt", St=1.0, Re=0.5
 ):
     dir_path = Path(directory)
@@ -122,7 +122,7 @@ def plot_dt_analysis_completa(
     v_ana = np.array([])
 
     # Importing data (for both the figures)
-    for file in csv_files_sorted[::-1]:
+    for file in csv_files_sorted:
         dt_val = extract_dt(file)
         df = pd.read_csv(file)
 
@@ -167,7 +167,7 @@ def plot_dt_analysis_completa(
     ax_comp.set_ylabel("Velocidade Adimensional (v*)", fontsize=12)
     ax_comp.legend(frameon=True, facecolor="white", framealpha=0.9)
     fig_comp.tight_layout()
-    fig_comp.savefig(fig_dir_path / "comparacao_curvas_dt.png", dpi=300)
+    fig_comp.savefig(fig_dir_path / "comparacao_curvas_dt.png")
     ## End of graph 1 (comparison) ##
 
     # plotting on graph 2
@@ -274,6 +274,6 @@ def plot_reynolds_comparison(
     plt.close("all")
 
 
-plot_stokes_comparison("results/St", "documento/figures")
-plot_dt_analysis_completa("results/Dt", "documento/figures")
-plot_reynolds_comparison("results/Re", "documento/figures")
+plot_stokes_comparison("results/St", "figures")
+plot_dt_analysis("results/Dt", "figures")
+plot_reynolds_comparison("results/Re", "figures")

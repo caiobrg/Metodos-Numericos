@@ -9,8 +9,8 @@ int main() {
   std::filesystem::create_directory("results/Dt");
   std::filesystem::create_directory("results/Re");
 
-  double stopTime = 10.0; // amount of "time" to simulate for
-  double inicialVelocity = 0.0;
+  double stopTime = 10.0;       // amount of "time" to simulate for
+  double inicialVelocity = 0.0; // Starting velocity of the sphere
 
   std::cout << "Starting simulations..." << std::endl;
 
@@ -40,7 +40,7 @@ int main() {
   }
 
   // ---------------------------------------------------------
-  // Analises 3, 4 e 5: Efeito Inercial (Re != 0)
+  // 3, 4 e 5:Inertia effects  (Re != 0)
   // ---------------------------------------------------------
   double reynolds_values[] = {0, 0.1, 0.5, 1.0};
 

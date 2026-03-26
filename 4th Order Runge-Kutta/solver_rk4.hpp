@@ -1,10 +1,11 @@
 // Libraries
-#pragma once // Evita que o arquivo seja incluído mais de uma vez
+#pragma once
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <string>
-#include <iomanip>
 
+// Obtained through algebraic manipulation
 inline double dimensionless_velocity_derivative(double stokesNumber,
                                                 double reynoldsNumber,
                                                 double velocity) {
@@ -19,10 +20,11 @@ inline int solver_rk4(double stokesNumber, double reynoldsNumber,
   std::ofstream outputFile(filename);
 
   outputFile << std::setprecision(15);
-  
+
   if (!outputFile.is_open()) {
-    std::cerr << "Erro: Nao foi possivel criar o arquivo." << std::endl;
-    return 0; // Encerra o programa com erro
+    std::cerr << "Error: it was not possible to create the file" << std::endl;
+    return 0; // Ends the program with an error if it was not possible to create
+              // or read the file
   }
 
   outputFile << "Time(t*),Velocity(v*)\n";
