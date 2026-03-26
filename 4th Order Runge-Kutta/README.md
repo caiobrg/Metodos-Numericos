@@ -88,7 +88,7 @@ Do ponto de vista físico, a análise paramétrica permitiu observar com clareza
 
 Conclui-se que o desenvolvimento metodológico percorrido - partindo de um caso limite assintótico conhecido e adicionando complexidade progressivamente - não apenas garantiu a confiabilidade do código, mas também fortalece a confiabilidade dos métodos numéricos para casos ainda mais complexos.
 
-## 8 Instruções de Uso
+## 7 Instruções de Uso
 
 Para garantir a reprodutibilidade dos resultados apresentados neste relatório, os códigos foram estruturados de forma modular e automatizada. Abaixo estão as etapas necessárias para compilar o solver em C++ e gerar os gráficos da análise utilizando Python.
 
