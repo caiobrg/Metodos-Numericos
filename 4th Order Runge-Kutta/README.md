@@ -6,11 +6,11 @@ A análise da dinâmica de partículas esféricas imersas em escoamentos fluidos
 
 No limite de escoamentos rastejantes, caracterizado por um Número de Reynolds tendendo a zero ($Re \rightarrow 0$), o arraste imposto pelo fluido é puramente viscoso e perfeitamente descrito pela Lei de Stokes. Neste cenário, a Equação Diferencial Ordinária (EDO) que rege a cinemática da partícula é linear, admitindo uma solução analítica exata na forma de decaimento exponencial, cujo tempo característico é ditado pelo Número de Stokes ($St$):
 
-$$v_{z}^{*}(t) = 1 - e^{-t/St}$$
+$$ v_{z}^{\ast}(t) = 1 - e^{-t/St} $$
 
 Contudo, a introdução de efeitos inerciais no escoamento ($Re \neq 0$) gera um desvio desse comportamento ideal. A força de arrasto adquire componentes não-lineares, frequentemente modeladas pela aproximação de Oseen, o que eleva a complexidade da EDO para uma forma análoga à Equação de Riccati, que ainda pode ser resolvida analiticamente:
 
-$$v_{z}^{*}(t) = v^{*} + \left[\frac{Q}{P} + \left(-\frac{1}{v^{*}} - \frac{Q}{P}\right)e^{-Pt^{*}}\right]^{-1}$$
+$$ v_{z}^{\ast}(t) = v^{\ast} + \left[ \frac{Q}{P} + \left(-\frac{1}{v^{\ast}} - \frac{Q}{P} \right) e^{-Pt^{\ast}} \right]^{-1} $$
 
 Para solucionar modelos matemáticos não-lineares com eficiência, a aplicação de métodos de integração numérica torna-se indispensável. O presente relatório documenta o desenvolvimento, a verificação e a análise de um solver numérico computacional, implementado em linguagem C++, voltado para a resolução do problema de valor inicial da relaxação da partícula através do método de Runge-Kutta de quarta ordem (RK4).
 
@@ -36,7 +36,7 @@ $$k_{4} = f(t_{i} + \Delta t,\ y_{i} + k_{3}\Delta t)$$
 
 Por meio da primeira APC já possuímos a primeira derivada da equação que buscamos aproximar, o que torna a implementação do método ainda mais simples. Bastando implementar um loop de cálculo que realize todas essas operações e incremente os valores:
 
-$$\frac{dv_{z}^{*}}{dt} = \frac{\left(1 - v_{z}^{*} - \frac{3}{8}Re \cdot v_{z}^{*2}\right)}{St}$$
+$$\frac{dv_{z}^{\ast}}{dt} = \frac{\left(1 - v_{z}^{\ast} - \frac{3}{8}Re \cdot v_{z}^{*2}\right)}{St}$$
 
 Para facilitar a organização e o uso futuro, foi criado um arquivo mestre (orquestrador) e um arquivo em que foi implementado, de fato, o algoritmo. Por fim, para a plotagem dos gráficos utilizados neste relatório, foi criado um script em Python, pois a facilidade do uso das bibliotecas de plotagem compensa o maior custo computacional. Todos estão disponíveis neste repositório GitHub.
 
@@ -49,7 +49,7 @@ Este é o caso que possui solução analítica mais simples e que foi trabalhada
 
 Apesar de os erros globais máximos - calculados por meio da equação abaixo - serem todos muito pequenos, há uma clara correlação entre um menor valor de $St$ e um maior erro. A origem desta tendência é, muito provavelmente, a diferença entre a suavidade das curvas com menor número de Stokes e aquelas com maior número de Stokes. As curvas com um $St$ menor ascendem muito rapidamente e possuem pouca suavidade na entrada para o platô, características essas que não são favoráveis para uma boa aproximação numérica.
 
-$$E_{max} = \max\!\left(|v_{num}^{*}(t) - v_{ana}^{*}(t)|\right)$$
+$$E_{max} = \max\!\left(|v_{num}^{\ast}(t) - v_{ana}^{\ast}(t)|\right)$$
 
 Contudo, é interessante destacar que as velocidades terminais são sempre as mesmas, a velocidade de Stokes ($U_{s}$). Apesar desta ressalva, todas as curvas chegaram a uma aproximação excelente - com erros baixíssimos - e foram consideradas muito satisfatórias.
 
