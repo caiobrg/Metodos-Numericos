@@ -87,3 +87,44 @@ Além da validação visual, o estudo de convergência validou a ordem teórica 
 Do ponto de vista físico, a análise paramétrica permitiu observar com clareza os papéis distintos dos números adimensionais. Enquanto o Número de Stokes ($St$) governa o tempo de relaxação do sistema no limite de arrasto puramente viscoso, a introdução do Número de Reynolds ($Re$) incorpora os efeitos inerciais e o arrasto não-linear de Oseen. Esta alteração na dinâmica fluida resulta em uma redução substancial da velocidade terminal alcançada pela partícula, conforme esperado teoricamente.
 
 Conclui-se que o desenvolvimento metodológico percorrido - partindo de um caso limite assintótico conhecido e adicionando complexidade progressivamente - não apenas garantiu a confiabilidade do código, mas também fortalece a confiabilidade dos métodos numéricos para casos ainda mais complexos.
+
+## 8 Instruções de Uso
+
+Para garantir a reprodutibilidade dos resultados apresentados neste relatório, os códigos foram estruturados de forma modular e automatizada. Abaixo estão as etapas necessárias para compilar o solver em C++ e gerar os gráficos da análise utilizando Python.
+
+### Pré-requisitos
+
+Certifique-se de ter os seguintes ambientes configurados em sua máquina:
+
+* **Compilador C++**: GCC (`g++`), Clang ou MSVC, com suporte a C++17 ou superior (devido ao uso da biblioteca `<filesystem>`).
+* **Python 3.x**: Caso queira usar o script incluso de plotagem. Com as bibliotecas de análise de dados instaladas. Elas podem ser obtidas executando o comando:
+  `pip install pandas numpy matplotlib seaborn`
+
+### Entendendo os Parâmetros de Entrada
+
+O orquestrador numérico (`main.cpp`) invoca a função `solver_rk4` passando parâmetros físicos e numéricos. Caso deseje configurar novos cenários, você pode alterar os seguintes valores diretamente no código:
+
+* **`St` (Número de Stokes):** Parâmetro físico que dita o tempo de relaxação característico da partícula. Valores maiores indicam partículas com maior inércia.
+* **`Re` (Número de Reynolds):** Parâmetro físico que controla a influência do arrasto não-linear. Defina como `0.0` para simular o regime estrito de Stokes ou valores $>0$ para incluir efeitos inerciais (arrasto de Oseen). Para valores muito altos de Re - ordem maior que 1 - as equações utilizadas neste trabalho não são válidas.
+* **`inicialVelocity`:** Velocidade adimensional da partícula no instante $t=0$. Neste estudo, foi mantida em `0.0` (partícula partindo do repouso).
+* **`stopTime`:** Tempo adimensional total da simulação (o momento em que o laço de cálculo é encerrado).
+* **`deltaT` ($\Delta t$):** O passo de tempo da integração numérica. Valores menores aumentam a precisão do RK4 (diminuem o erro), mas elevam o custo computacional.
+
+### Passo 1: Compilação e Execução do Solver (C++)
+O orquestrador numérico (`main.cpp`) e o cabeçalho contendo a implementação do método (`solver_rk4.hpp`) devem estar no mesmo diretório raiz do projeto. 
+
+Abra o terminal nesta pasta e compile o código. Se estiver usando o `g++`, o comando será:
+
+```bash
+g++ main.cpp -o solver
+```
+
+Este comando deve gerar um binário com nome *solver*, ao executá-lo o programa criará uma subdiretório *results* e nele os resultados da simulação serão salvos em arquivos *csv* de acordo com o que foi configurado no orquestrador.
+
+Para utilizar o arquivo de plotagem incluso basta que este esteja salvo no mesmo diretório em que o diretório *results* está salvo. Para utilizá-lo o comando será:
+
+```bash
+python main.py
+```
+
+As imagens serão salvas num subdiretório *figures*.
