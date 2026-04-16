@@ -9,8 +9,8 @@ int main() {
   std::filesystem::create_directory("results/Dt");
   std::filesystem::create_directory("results/Re");
 
-  double stopTime = 10.0;       // amount of "time" to simulate for
-  double inicialVelocity = 0.0; // Starting velocity of the sphere
+  double stopTime = 10.0;       // amount of time* to simulate for
+  double inicialVelocity = 0.0; // Starting velocity* of the sphere
 
   std::cout << "Starting simulations..." << std::endl;
 

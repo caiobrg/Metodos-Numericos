@@ -4,17 +4,20 @@
 
 Este projeto busca implementar um solver RK4 para o estudo da sedimentação de uma partícula em regime de stokes. O projeto foi estruturado da seguinte maneira.
 
-```
-📁 4th Order Runge-Kutta
-├── [📁 figures](figures)
-│   ├── [analise_convergencia_dt.png](analise_convergencia_dt.png)
-│   ├── [comparacao_curvas_dt.png](comparacao_curvas_dt.png)
-│   ├── [comparacao_Re.png](comparacao_Re.png)
-│   └── [comparação_St.png](comparação_St.png)
-├── [main.cpp](main.cpp)
-├── [analysis.py](analysis.py)
-├── [README.md](README.md)
-└── [solver_rk4.hpp](solver_rk4.hpp)
+``` plain text
+└── 📁4th Order Runge-Kutta
+    └── 📁figures
+        ├── analise_convergencia_dt.png
+        ├── comparacao_curvas_dt.png
+        ├── comparacao_Re.png
+        ├── comparação_St.png
+    ├── .gitignore
+    ├── analysis.py
+    ├── main
+    ├── main.cpp
+    ├── PPC1 e APC1.pdf
+    ├── README.md
+    └── solver_rk4.hpp
 ```
 
 O motor do solver é o arquivo [solver_rk4.hpp](solver_rk4.hpp), este é um arquivo de cabeçalho cujo objetivo é permitir que seja inserido num arquivo orquestrador. Para as análises aqui apresentadas, o arquivo orquestrador utilizado foi o [main.cpp](main.cpp). Por fim, para realizar as plotagens e comparações com valores analíticos, utilizou-se um script em python [analysis.py](analysis.py). Para informações sobre dependências e compilação favor referir a seção [#7](#7-instruções-de-uso).
