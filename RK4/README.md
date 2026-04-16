@@ -1,22 +1,5 @@
 # Solver numérico RK4
 
-## Resumo
-
-Este projeto busca implementar um solver RK4 para o estudo da sedimentação de uma partícula em regime de stokes. O projeto foi estruturado da seguinte maneira.
-
-📁 4th Order Runge-Kutta
-├── [📁 figures](figures)
-│   ├── [analise_convergencia_dt.png](analise_convergencia_dt.png)
-│   ├── [comparacao_curvas_dt.png](comparacao_curvas_dt.png)
-│   ├── [comparacao_Re.png](comparacao_Re.png)
-│   └── [comparação_St.png](comparação_St.png)
-├── [main.cpp](main.cpp)
-├── [analysis.py](analysis.py)
-├── [README.md](README.md)
-└── [solver_rk4.hpp](solver_rk4.hpp)
-
-O motor do solver é o arquivo [solver_rk4.hpp](solver_rk4.hpp), este é um arquivo de cabeçalho cujo objetivo é permitir que seja inserido num arquivo orquestrador. Para as análises aqui apresentadas, o arquivo orquestrador utilizado foi o [main.cpp](main.cpp). Por fim, para realizar as plotagens e comparações com valores analíticos, utilizou-se um script em python [analysis.py](analysis.py). Para informações sobre dependências e compilação favor referir a seção [#7](#7-instruções-de-uso).
-
 ## 1 Introdução
 
 A análise da dinâmica de partículas esféricas imersas em escoamentos fluidos é um problema clássico e de extrema relevância conceitual na mecânica dos fluidos e em diversas aplicações de engenharia. Um fenômeno de particular interesse é a curva de relaxação da velocidade da partícula, que descreve o seu comportamento transiente desde o repouso até o alcance da velocidade terminal, sendo este movimento governado pelo balanço entre as forças inerciais e as forças de arrasto.
@@ -105,7 +88,7 @@ Do ponto de vista físico, a análise paramétrica permitiu observar com clareza
 
 Conclui-se que o desenvolvimento metodológico percorrido - partindo de um caso limite assintótico conhecido e adicionando complexidade progressivamente - não apenas garantiu a confiabilidade do código, mas também fortalece a confiabilidade dos métodos numéricos para casos ainda mais complexos.
 
-## **7** Instruções de Uso
+## 7 Instruções de Uso
 
 Para garantir a reprodutibilidade dos resultados apresentados neste relatório, os códigos foram estruturados de forma modular e automatizada. Abaixo estão as etapas necessárias para compilar o solver em C++ e gerar os gráficos da análise utilizando Python.
 
@@ -114,7 +97,7 @@ Para garantir a reprodutibilidade dos resultados apresentados neste relatório, 
 Certifique-se de ter os seguintes ambientes configurados em sua máquina:
 
 * **Compilador C++**: GCC (`g++`), Clang ou MSVC, com suporte a C++17 ou superior (devido ao uso da biblioteca `<filesystem>`).
-* **Python 3.x**: Caso queira usar o script incluso de plotagem. É necessário instalar as bibliotecas de plotagem e análise de dados, elas podem ser obtidas executando o comando:
+* **Python 3.x**: Caso queira usar o script incluso de plotagem. Com as bibliotecas de análise de dados instaladas. Elas podem ser obtidas executando o comando:
   `pip install pandas numpy matplotlib seaborn`
 
 ### Entendendo os Parâmetros de Entrada
