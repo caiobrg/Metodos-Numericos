@@ -32,65 +32,69 @@ Em face deste desafio, métodos numéricos capazes de encontrar raízes para pol
 O método de bairstow é um método iterativo cuja ideia principal é dividir um polinômio $f_n(x)$ por um fator quadrático $D(x) = x^2 - rx - s$, em que $r$ e $s$ são coeficientes reais a serem ajustados pelo método de Newton-Raphson até que o resto ($R(x)$) da divisão seja nulo. Quando isto ocorre, o método é aplicado novamente no polinômio resultante ($f_{n-2}(x)$) até que este tenha grau $\le 2$. Por fim, aplica-se uma das formulações conhecidas para o grau do polinômio para encontrar as últimas raízes. Abaixo há um fluxograma do método.
 
 ```mermaid
----
-config:
-  theme: base
-  themeVariables:
-    primaryColor: '#ffffff'
-    edgeLabelBackground: '#ffffff'
-    tertiaryColor: '#ffffff'
-  look: neo
----
 flowchart LR
- subgraph CalcB["Estimar os coeficientes b"]
-    direction TB
-        b1["$$b_n = a_n$$"]
-        b2["$$b_{n-1} = a_{n-1} + r \cdot b_n$$"]
-        b3["$$  b_i = a_i + r \cdot b_{i+1} + s \cdot b_{i+2} $$"]
-        b4["$$i = n-2 \rightarrow 0$$"]
-  end
- subgraph CalcC["Estimar os coeficientes C"]
-    direction TB
-        c1["$$c_n = b_n$$"]
-        c2["$$c_{n-1} = b_{n-1} + r \cdot c_n$$"]
-        c3["$$  c_i = b_i + r \cdot c_{i+1} + s \cdot c_{i+2} $$"]
-        c4["$$i = n-2 \rightarrow 1$$"]
-  end
- subgraph Sislin["Resolver o Sistema Linear"]
-    direction TB
-        eq1["$$c_1 \Delta r + c_2 \Delta s = -b_0$$"]
-        eq2["$$c_2 \Delta r + c_3 \Delta s = -b_1$$"]
-  end
- subgraph attVal["Atualizar r e s"]
-    direction TB
-        r["$$r_i = r_{i-1} + \Delta r$$"]
-        s["$$s_i = s_{i-1} + \Delta s$$"]
-  end
- subgraph conv["Verificar a convergência"]
-    direction TB
-        convr["$$\left| \dfrac{\Delta r_i}{r_i} \right| \le \text{tol}_1$$"]
-        convs["$$ \left| \dfrac{\Delta s_i}{s_i} \right| \le \text{tol}_2$$ ?"]
-  end
-    b1 --> b2
-    b2 --> b3
-    c1 --> c2
-    c2 --> c3
-    eq1 ~~~ eq2
-    r ~~~ s
-    convr ~~~ convs
+    %% Força a cor das setas para um cinza claro, visível no Claro e no Escuro
+    linkStyle default stroke:#a0a0a0,stroke-width:2px;
+
+    subgraph CalcB["Estimar os coeficientes b"]
+        direction TB
+        b1["bₙ = aₙ"]
+        b2["bₙ₋₁ = aₙ₋₁ + r · bₙ"]
+        b3["bᵢ = aᵢ + r · bᵢ₊₁ + s · bᵢ₊₂"]
+        b4["i = n-2 → 0"]
+        
+        b1 ~~~ b2 ~~~ b3
+    end
+
+    subgraph CalcC["Estimar os coeficientes C"]
+        direction TB
+        c1["cₙ = bₙ"]
+        c2["cₙ₋₁ = bₙ₋₁ + r · cₙ"]
+        c3["cᵢ = bᵢ + r · cᵢ₊₁ + s · cᵢ₊₂"]
+        c4["i = n-2 → 1"]
+        
+        c1 ~~~ c2 ~~~ c3
+    end
+
+    subgraph Sislin["Resolver o Sistema Linear"]
+        direction TB
+        eq1["c₁Δr + c₂Δs = -b₀"]
+        eq2["c₂Δr + c₃Δs = -b₁"]
+        
+        eq1 ~~~ eq2
+    end
+
+    subgraph attVal["Atualizar r e s"]
+        direction TB
+        r["rᵢ = rᵢ₋₁ + Δr"]
+        s["sᵢ = sᵢ₋₁ + Δs"]
+        
+        r ~~~ s
+    end
+
+    subgraph conv["Verificar a convergência"]
+        direction TB
+        convr["|Δrᵢ / rᵢ| ≤ tol₁"]
+        convs["|Δsᵢ / sᵢ| ≤ tol₂ ?"]
+        
+        convr ~~~ convs
+    end
+
+    %% Conexões principais entre os blocos
     CalcB --> CalcC
     CalcC --> Sislin
     Sislin --> attVal
     attVal --> conv
-    conv -- Não Convergiu --> CalcB
-    conv -- Convergiu --> grauPol["Qual o grau do polinomio?"]
-    grauPol -- n = 2 --> n2["$$x_r = \frac{r \pm \sqrt{r^2 + 4s}}{2}$$"]
-    grauPol -- n=1 --> n1["$$x_r = -\frac{s}{r}$$"]
-    grauPol -- n>2 --> n3[Alimenta-se o polinômio deflacionado como os novos coeficientes a]
-
-    grauPol@{ shape: diam}
-    n2@{ shape: rect}
-    n1@{ shape: rect}
+    
+    %% Lógica de Decisão do Método
+    conv -- "Não Convergiu" --> CalcB
+    
+    %% O uso de chaves {} cria um losango de decisão automaticamente
+    conv -- "Convergiu" --> grauPol{"Qual o grau do polinômio?"}
+    
+    grauPol -- "n = 2" --> n2["xᵣ = (r ± √(r² + 4s)) / 2"]
+    grauPol -- "n = 1" --> n1["xᵣ = -s / r"]
+    grauPol -- "n > 2" --> n3["Alimenta-se o polinômio deflacionado como os novos coeficientes a"]
 ```
 
 ## Validação do solver
