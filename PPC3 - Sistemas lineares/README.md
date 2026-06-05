@@ -44,9 +44,9 @@ Na formulação discreta para um nó interno genérico, surge a questão: os ter
 
 Ao agrupar todos os termos avaliados no instante futuro ($t + \Delta t$) no lado esquerdo da equação e os termos no instante atual ($t$) no lado direito, o sistema de equações algébricas assume a forma matricial:
 
-$$\underbar{\underbar{A}} \cdot \underbar{T} = \underbar{B}$$
+$$\underline{\underline{A}} \cdot \underline{T} = \underline{B}$$
 
-sendo $\underbar{\underbar{A}}$ uma matriz tridiagonal, uma vez que cada nó da malha interage apenas com seus vizinhos adjacentes.
+sendo $\underline{\underline{A}}$ uma matriz tridiagonal, uma vez que cada nó da malha interage apenas com seus vizinhos adjacentes.
 
 A resolução de sistemas tridiagonais utilizando métodos diretos convencionais (como a Eliminação de Gauss genérica) é custosa e computacionalmente ineficiente. Por isso, a implementação em `solver_diferencas_finitas.hpp` utiliza o **Algoritmo de Thomas** (Tridiagonal Matrix Algorithm - TDMA). O método otimiza a eliminação Gaussiana para matrizes tridiagonais com um custo operacional drasticamente reduzido a $O(N)$ operações por passo temporal, garantindo alta eficiência por meio de uma etapa de decomposição progressiva e outra de substituição regressiva.
 
