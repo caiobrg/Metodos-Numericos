@@ -7,21 +7,15 @@ Este projeto apresenta o estudo e a implementação computacional de métodos de
 ``` plain text
 └── 📁PPC4 - Otimização
     ├── .gitignore
-    ├── Archive.zip
-    ├── helper.pdf
-    ├── helper.sage
     ├── main
     ├── orquestrador.cpp
-    ├── output1.dat
-    ├── output2.dat
     ├── plot.py
-    ├── PPC4 e APC4.pdf
     ├── README.md
     ├── solver_otimizacao.hpp
     └── trajetorias_otimizacao.png
 ```
 
-O motor do solver é o arquivo de cabeçalho [solver_otimizacao.hpp](solver_otimizacao.hpp), que contém as funções objetivo, os gradientes e as rotinas de otimização. O arquivo orquestrador [orquestrador.cpp](orquestrador.cpp) é responsável por receber as coordenadas iniciais inseridas pelo usuário e disparar os métodos numéricos, salvando as trajetórias em arquivos de saída (`output1.dat` para Aclive Máximo e `output2.dat` para Gradientes Conjugados). O script Python [plot.py](plot.py) lê os resultados simulados e gera a visualização gráfica das trajetórias sobre as curvas de nível da função objetivo, salva em [trajetorias_otimizacao.png](trajetorias_otimizacao.png). Por fim, o script [helper.sage](helper.sage) fornece o suporte simbólico em SageMath para validação analítica passo a passo.
+O motor do solver é o arquivo de cabeçalho [solver_otimizacao.hpp](solver_otimizacao.hpp), que contém as funções objetivo, os gradientes e as rotinas de otimização. O arquivo orquestrador [orquestrador.cpp](orquestrador.cpp) é responsável por receber as coordenadas iniciais inseridas pelo usuário e disparar os métodos numéricos, salvando as trajetórias em arquivos de saída (`output1.dat` para Aclive Máximo e `output2.dat` para Gradientes Conjugados). O script Python [plot.py](plot.py) lê os resultados simulados e gera a visualização gráfica das trajetórias sobre as curvas de nível da função objetivo, salva em [trajetorias_otimizacao.png](trajetorias_otimizacao.png).
 
 ---
 
@@ -54,6 +48,7 @@ Para solucionar numericamente este tipo de problema quando caminhos puramente an
 Para garantir modularidade e alto desempenho, os métodos foram implementados em C++ diretamente no cabeçalho [solver_otimizacao.hpp](solver_otimizacao.hpp), sem a necessidade de resolvedores de otimização externos.
 
 ### 2.1 Método do Aclive Máximo (Steepest Ascent)
+
 O método do Aclive Máximo atualiza a estimativa atual caminhando na direção do próprio vetor gradiente local $\nabla f(\mathbf{x}^{(k)})$, que aponta para a direção de maior crescimento instantâneo da função:
 
 $$ \mathbf{p}^{(k)} = \nabla f(\mathbf{x}^{(k)}) $$
@@ -62,9 +57,10 @@ $$ \mathbf{x}^{(k+1)} = \mathbf{x}^{(k)} + h^\ast \mathbf{p}^{(k)} $$
 
 Onde $h^\ast$ representa o passo de tamanho ótimo determinado através de uma rotina de busca unidimensional (Line Search).
 
-Apesar de conceitualmente simples, o método do Aclive Máximo tende a sofrer de oscilações ortogonais (comportamento em "zigue-zague") em regiões de vales ou cumes estreitos, o que desacelera severamente a convergência perto do ponto ideal.
+Apesar de conceitualmente simples, o método do Aclive Máximo realiza a busca com oscilações ortogonais (comportamento em "zigue-zague"), o que desacelera severamente a convergência perto do ponto ideal.
 
 ### 2.2 Método dos Gradientes Conjugados (Fletcher-Reeves)
+
 O método de Gradientes Conjugados supera a lentidão do zigue-zague gerando direções de busca linearmente independentes e conjugadas em relação à matriz Hessiana do sistema. Para a primeira iteração ($k=0$), o método inicia com a própria direção do gradiente:
 
 $$ \mathbf{p}^{(0)} = \nabla f(\mathbf{x}^{(0)}) $$
@@ -109,9 +105,9 @@ Abaixo, a visualização gráfica gerada pelo script Python plota as trajetória
 
 ### Discussão dos Arquivos de Dados
 
-1.  **Aclive Máximo (`output1.dat`):**
+1. **Aclive Máximo (`output1.dat`):**
     O método do Aclive Máximo exigiu **27 iterações** para convergir à vizinhança do ponto ótimo analítico $(2.0, 1.0)$. A oscilação em zigue-zague fica evidente a partir da alternância sistemática da direção dos passos ortogonais de busca, característicos deste método em superfícies elípticas de vales acentuados.
-2.  **Gradientes Conjugados (`output2.dat`):**
+2. **Gradientes Conjugados (`output2.dat`):**
     O método de Fletcher-Reeves demonstrou enorme superioridade computacional, convergindo de forma precisa para o ponto ótimo exato $(2.0, 1.0)$ em apenas **2 iterações**, atingindo uma norma de gradiente residual nula ($0.000000$). Este comportamento valida de forma experimental a propriedade teórica de convergência finita do método para funções quadráticas de dimensão $2$.
 
 ---
