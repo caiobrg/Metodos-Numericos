@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <vector>
 
 double f(double x) {
   return std::pow(x, 3.0) - 6.0 * std::pow(x, 2.0) + 9.0 * x - 4.0;
@@ -20,7 +19,7 @@ double f_NRmod(double x) {
 }
 
 int main() {
-  double x_atual = 2.5;
+  double x_atual = 100;
   double tol = 1.0e-6;
   int max_iter = 100, iter = 0;
   double erro = 1.0;
@@ -48,17 +47,10 @@ int main() {
                "-----------------"
             << std::endl;
 
-  std::ofstream outfile("raizes.dat");
-
   while (erro > tol && iter < max_iter) {
     iter++;
     double fx = f(x_atual);
     double df = f_derivada1(x_atual);
-
-    if (std::abs(df) < 1e-12) {
-      std::cout << "Aviso: Derivada próxima de zero. Parando." << std::endl;
-      break;
-    }
 
     double x_novo = f_NR(x_atual); // or f_NRmod(x_atual)
     erro = std::abs(x_novo - x_atual);
@@ -67,6 +59,11 @@ int main() {
               << std::setprecision(8) << std::setw(15) << x_atual << " | "
               << std::scientific << std::setprecision(8) << std::setw(17) << fx
               << " | " << std::setw(17) << erro << std::endl;
+
+    if (std::abs(df) < 1e-12) {
+      std::cout << "Aviso: Derivada próxima de zero. Parando." << std::endl;
+      break;
+    }
 
     x_atual = x_novo;
   }
@@ -80,13 +77,6 @@ int main() {
   std::cout << "---------------------------------------------------------------"
                "-----------------"
             << std::endl;
-
-  if (outfile.is_open()) {
-    outfile << "Raiz encontrada: " << std::fixed << std::setprecision(8)
-            << x_atual << std::endl;
-    outfile << "Iteracoes realizadas: " << iter << std::endl;
-    outfile.close();
-  }
 
   return 0;
 }
