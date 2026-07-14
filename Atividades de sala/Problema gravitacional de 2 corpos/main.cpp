@@ -1,3 +1,4 @@
+#include <bits/stdc++.h>
 #include <cassert>
 #include <cmath>
 #include <cstddef>
@@ -33,6 +34,25 @@ private:
   double passoIntegracao;
   double tempoTotal;
 
+  std::string metodo;
+
+  // Método auxiliar privado (sobrecarga para string)
+  std::string capturarInput(std::string valorPadrao, const std::string &nome) {
+    std::string input;
+    std::cout << "Digite o valor de " << nome << " [default: " << valorPadrao
+              << "]: ";
+    std::getline(std::cin, input);
+
+    // Transforma o input para lowercase
+    std::transform(input.begin(), input.end(), input.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+
+    if (!input.empty()) {
+      return input;
+    }
+    return valorPadrao;
+  }
+
   // Método auxiliar privado (sobrecarga para double)
   double capturarInput(double valorPadrao, const std::string &nome) {
     std::string input;
@@ -60,15 +80,16 @@ private:
   }
 
 public:
-  configuracao_simulacao(double passoIntegracao = 1.0e-3,
+  configuracao_simulacao(std::string metodo = "euler",
+                         double passoIntegracao = 1.0e-3,
                          double tempoTotal = 10, double G = 1, double m1 = 1,
                          double m2 = 1, estado r1_ini = {.x = -0.5, .y = 0},
                          estado r2_ini = {.x = 0.5, .y = 0},
                          estado v1_ini = {.x = 0, .y = -0.5},
                          estado v2_ini = {.x = 0, .y = 0.5})
       : passoIntegracao(passoIntegracao), tempoTotal(tempoTotal), G(G), m1(m1),
-        m2(m2), r1_ini(r1_ini), r2_ini(r2_ini), v1_ini(v1_ini), v2_ini(v2_ini) {
-  }
+        m2(m2), r1_ini(r1_ini), r2_ini(r2_ini), v1_ini(v1_ini), v2_ini(v2_ini),
+        metodo(metodo) {}
 
   void configurar_pelo_terminal() {
     passoIntegracao =
@@ -93,6 +114,14 @@ public:
         capturarInput(v2_ini.x, "v2_x(0) (velocidade inicial x do corpo 2)");
     v2_ini.y =
         capturarInput(v2_ini.y, "v2_y(0) (velocidade inicial y do corpo 2)");
+    while (true) {
+      metodo = capturarInput("euler", "metodo (escolha 'euler' ou 'leapfrog')");
+      if (metodo == "euler" || metodo == "leapfrog") {
+        break;
+      }
+      std::cout << "Método inválido! Por favor, escolha 'euler' ou 'leapfrog'."
+                << std::endl;
+    }
   }
 
   double get_passo_integracao() const { return passoIntegracao; }
@@ -104,11 +133,14 @@ public:
   estado get_r2_ini() const { return r2_ini; }
   estado get_v1_ini() const { return v1_ini; }
   estado get_v2_ini() const { return v2_ini; }
+  std::string get_metodo() const { return metodo; }
 };
 
-class integrador_euler {
+class integrador {
 private:
   configuracao_simulacao config;
+
+  std::string metodo = config.get_metodo();
 
   double dt = config.get_passo_integracao();
   double G = config.get_G();
@@ -136,7 +168,7 @@ private:
   }
 
 public:
-  integrador_euler(configuracao_simulacao config) : config(config) {}
+  integrador(configuracao_simulacao config) : config(config) {}
 
   std::vector<estado> dar_passo(const estado &r1_old, const estado &v1_old,
                                 const estado &r2_old, const estado &v2_old) {
@@ -146,19 +178,52 @@ public:
     estado v1_new;
     estado v2_new;
 
-    std::vector<estado> derivadas_v = calcular_derivadas_v(r1_old, r2_old);
+    std::vector<estado> acc = calcular_derivadas_v(r1_old, r2_old);
 
-    v1_new.x = v1_old.x + dt * derivadas_v[0].x;
-    v1_new.y = v1_old.y + dt * derivadas_v[0].y;
-    v2_new.x = v2_old.x + dt * derivadas_v[1].x;
-    v2_new.y = v2_old.y + dt * derivadas_v[1].y;
+    if (metodo == "euler") {
+      // Atualiza as velocidades usando a aceleração calculada a partir da
+      // posição no passo anterior
+      v1_new.x = v1_old.x + dt * acc[0].x;
+      v1_new.y = v1_old.y + dt * acc[0].y;
+      v2_new.x = v2_old.x + dt * acc[1].x;
+      v2_new.y = v2_old.y + dt * acc[1].y;
 
-    r1_new.x = r1_old.x + dt * v1_old.x;
-    r1_new.y = r1_old.y + dt * v1_old.y;
-    r2_new.x = r2_old.x + dt * v2_old.x;
-    r2_new.y = r2_old.y + dt * v2_old.y;
+      // Atualiza a posição usando a velocidade calculada no passo anterior
+      r1_new.x = r1_old.x + dt * v1_old.x;
+      r1_new.y = r1_old.y + dt * v1_old.y;
+      r2_new.x = r2_old.x + dt * v2_old.x;
+      r2_new.y = r2_old.y + dt * v2_old.y;
+
+    } else if (metodo == "leapfrog") {
+
+      estado v1_interm;
+      estado v2_interm;
+
+      // Calcula a velocidade num passo intermediário
+      v1_interm.x = v1_old.x + (dt / 2) * acc[0].x;
+      v1_interm.y = v1_old.y + (dt / 2) * acc[0].y;
+      v2_interm.x = v2_old.x + (dt / 2) * acc[1].x;
+      v2_interm.y = v2_old.y + (dt / 2) * acc[1].y;
+
+      // Atualiza os raios usando a velocidade nesse passo intermediário
+      r1_new.x = r1_old.x + dt * v1_interm.x;
+      r1_new.y = r1_old.y + dt * v1_interm.y;
+      r2_new.x = r2_old.x + dt * v2_interm.x;
+      r2_new.y = r2_old.y + dt * v2_interm.y;
+
+      // Atualiza a aceleração usando as novas posições
+      acc = calcular_derivadas_v(r1_new, r2_new);
+
+      // Por fim, atualiza as velocidades usando o ponto médio e a nova
+      // aceleração
+      v1_new.x = v1_interm.x + (dt / 2) * acc[0].x;
+      v1_new.y = v1_interm.y + (dt / 2) * acc[0].y;
+      v2_new.x = v2_interm.x + (dt / 2) * acc[1].x;
+      v2_new.y = v2_interm.y + (dt / 2) * acc[1].y;
+    }
 
     std::vector<estado> results(4);
+    // Salva os novos resultados num vetor de resultados
     results[0] = r1_new;
     results[1] = v1_new;
     results[2] = r2_new;
@@ -171,7 +236,7 @@ public:
 class solver {
 private:
   configuracao_simulacao config;
-  integrador_euler integradorEuler{config};
+  integrador integrad{config};
 
   std::size_t N = static_cast<std::size_t>(
       std::round(config.get_tempo_total() / config.get_passo_integracao()) + 1);
@@ -188,16 +253,15 @@ public:
   void _save_results(const std::vector<estado> &r1Vec,
                      const std::vector<estado> &v1Vec,
                      const std::vector<estado> &r2Vec,
-                     const std::vector<estado> &v2Vec, const char *filename,
-                     int precision = 15) {
+                     const std::vector<estado> &v2Vec,
+                     const std::string &filename, int precision = 15) {
     // Abre o arquivo
-    std::string filenameStr = filename;
-    std::ofstream outFile("./results/" + filenameStr + ".csv");
+    std::ofstream outFile("./results/" + filename + ".csv");
 
     // Verifica se foi possível abrir o arquivo ou para o programa
     if (!outFile.is_open())
-      throw std::runtime_error("Não foi possível abrir o arquivo " +
-                               filenameStr + " para gravação");
+      throw std::runtime_error("Não foi possível abrir o arquivo " + filename +
+                               " para gravação");
     // Define o número de casas decimais no arquivo
     outFile << std::fixed << std::setprecision(precision);
 
@@ -244,24 +308,35 @@ public:
     v2Vec.assign(N, config.get_v2_ini());
 
     for (size_t i = 0; i < N - 1; i++) {
+      // Vetor temporário para armazenar os resultados de uma etapa de
+      // integração
       std::vector<estado> vetTemp(4);
 
-      vetTemp =
-          integradorEuler.dar_passo(r1Vec[i], v1Vec[i], r2Vec[i], v2Vec[i]);
+      // Realiza uma etapa de integração
+      vetTemp = integrad.dar_passo(r1Vec[i], v1Vec[i], r2Vec[i], v2Vec[i]);
+
+      // Atualiza os valores dos vetores
       r1Vec[i + 1] = vetTemp[0];
       v1Vec[i + 1] = vetTemp[1];
       r2Vec[i + 1] = vetTemp[2];
       v2Vec[i + 1] = vetTemp[3];
     }
 
-    _save_results(r1Vec, v1Vec, r2Vec, v2Vec, "resultados_euler");
+    _save_results(r1Vec, v1Vec, r2Vec, v2Vec,
+                  "resultados_" + config.get_metodo());
   }
 };
 
 int main() {
-  configuracao_simulacao config{};
-  solver solver{config};
+  configuracao_simulacao configEuler{"euler"};
+  solver solverEuler{configEuler};
+
+  solverEuler.execucao();
+
+  configuracao_simulacao configLeapfrog{"leapfrog"};
+  solver solver{configLeapfrog};
 
   solver.execucao();
+
   return 1;
 }
