@@ -20,7 +20,7 @@ As órbitas sofrem um efeito de espiralamento para fora (expansão orbital). Con
 
 **Sim, muito superior.** O método Leapfrog preserva a energia mecânica de forma excelente. Com o mesmo passo de tempo $\Delta t = 1.0\times 10^{-3}$, a energia inicial de $-0.75$ terminou em aproximadamente $-0.749999984$ após 10.000 passos (um desvio residual irrelevante de apenas $\approx 1.6 \times 10^{-8}$). Além de extremamente pequeno, o erro de energia no método Leapfrog não diverge de forma monótona; ele oscila de forma estritamente limitada ao longo do tempo.
 
-### 4. Qual método é mais adequado para esse problema conservativo? Justifique.
+### 4. Qual método é mais adequado para esse problema conservativo? Justifique
 
 O método **Leapfrog** é muito mais adequado. O problema gravitacional de dois corpos é um sistema mecânico conservativo (Hamiltoniano). O método Leapfrog é um **integrador simplético** de segunda ordem, o que significa que ele preserva a geometria de área no espaço de fase (teorema de Liouville). Essa propriedade simplética garante que a energia do sistema oscile estritamente em torno do valor real em vez de sofrer desvios sistemáticos (drift), mantendo a estabilidade orbital por períodos indefinidos de simulação. O método de Euler, por ser de primeira ordem e não simplético, é inadequado para integrações de longo prazo em sistemas físicos conservativos.
 
