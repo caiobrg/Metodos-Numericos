@@ -2,7 +2,7 @@ import polars as pl
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
-import scienceplots
+import scienceplots  # noqa: F401
 import os
 
 plt.style.use("science")

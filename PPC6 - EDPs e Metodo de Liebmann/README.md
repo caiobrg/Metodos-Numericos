@@ -12,6 +12,7 @@ discretizada pelo **Método das Diferenças Finitas (MDF)** com condições de c
 └── 📁PPC6/APC6 - Condução 2D em Aleta
     ├── .gitignore
     ├── main.cpp
+    ├── classes.hpp
     ├── plotar_resultados.py
     ├── README.md
     ├── 📁resultados
@@ -29,7 +30,7 @@ discretizada pelo **Método das Diferenças Finitas (MDF)** com condições de c
         └── perfil_temperatura_{11x11,21x21,41x41,81x81}.png
 ```
 
-Todo o motor numérico (configuração, malha, condições de contorno e solvers) está implementado em um único arquivo orquestrador, [main.cpp](main.cpp), organizado em quatro classes independentes. A plotagem de todos os gráficos é feita pelo script em Python [plotar_resultados.py](plotar_resultados.py), que lê os arquivos gerados em `resultados/` e salva as figuras em `figures/`.
+Todo o motor numérico (configuração, malha, condições de contorno e solvers) está implementado em um arquivo header, [classes.hpp](classes.cpp), organizado em quatro classes independentes. Um arquivo orquestrador, [classes.hpp](classes.cpp), é responsável por fazer as análises propostas no roteiro. A plotagem de todos os gráficos é feita pelo script em Python [plotar_resultados.py](plotar_resultados.py), que lê os arquivos gerados em `resultados/` e salva as figuras em `figures/`.
 
 Caso deseje somente as instruções de compilação e uso, favor se dirigir à seção [Instruções de Uso](#instruções-de-uso).
 
@@ -218,11 +219,11 @@ A diferença cai de forma aproximadamente proporcional ao $Bi$ (e depende apenas
 Os mapas de contorno tornam visível a influência das condições convectivas sobre o campo bidimensional: a isoterma mais quente acompanha fielmente a base ($x=0$, $T=T_b$, condição de Dirichlet, perfil praticamente vertical e uniforme em $y$), enquanto próximo às arestas convectivas (norte, sul e leste) as isotermas se curvam visivelmente em direção a $T_\infty$, refletindo a perda de calor lateral. Esse encurvamento é justamente a componente 2D que a teoria 1D da Seção 2 não reproduz, e sua intensidade cresce com o número de Biot — quanto maior $h$ em relação a $k$, mais acentuado o gradiente transversal (em $y$) próximo às bordas convectivas.
 
 | Malha 11×11 | Malha 21×21 |
-|---|---|
+| --- | --- |
 | ![Perfil 11x11](figures/perfil_temperatura_11x11.png) | ![Perfil 21x21](figures/perfil_temperatura_21x21.png) |
 
 | Malha 41×41 | Malha 81×81 |
-|---|---|
+| --- | --- |
 | ![Perfil 41x41](figures/perfil_temperatura_41x41.png) | ![Perfil 81x81](figures/perfil_temperatura_81x81.png) |
 
 ### 4.5 Principais fontes de diferença entre modelo numérico e solução de referência
@@ -237,11 +238,25 @@ Em suma, as diferenças residuais observadas nesta atividade estão associadas a
 ### Pré-requisitos
 
 * **Compilador C++**: GCC (`g++`) ou Clang com suporte a C++17;
-* **Biblioteca Eigen3** (usada apenas como contêiner de matriz densa para a Eliminação de Gauss; toda a lógica de montagem e resolução do sistema é própria). Em distribuições baseadas em Debian/Ubuntu:
+* **Biblioteca Eigen3** (usada apenas como contêiner de matriz densa para a Eliminação de Gauss; toda a lógica de montagem e resolução do sistema é própria).
 
-```bash
-sudo apt-get install libeigen3-dev
-```
+  * Debian/Ubuntu:
+  
+    ```bash
+    sudo apt-get install libeigen3-dev
+    ```
+
+  * Fedora/RHEL:
+  
+    ```bash
+    sudo dnf install eigen3-devel
+    ```
+
+  * Arch Linux:
+  
+    ```bash
+    sudo pacman -S eigen
+    ```
 
 * **Python 3.x**, com as bibliotecas `polars`, `seaborn`, `matplotlib`, `scienceplots` e `numpy`:
 
