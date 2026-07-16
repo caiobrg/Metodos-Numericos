@@ -63,12 +63,15 @@ $$\theta = \frac{2\,\Delta x\,h}{k}, \qquad \omega = \frac{2\,\Delta y\,h}{k}, \
 as equações resultantes, para cada tipo de nó de aresta, são:
 
 * **Aresta Sul/Norte** ($y=0$ ou $y=H$, exceto cantos):
+
 $$-\left(\frac{2}{\sqrt\beta}+2\sqrt\beta+\theta\right)T_{i,j} + \frac{1}{\sqrt\beta}\left(T_{i-1,j}+T_{i+1,j}\right) + 2\sqrt\beta\,T_{viz} = -\theta\,T_\infty$$
 
 * **Aresta Leste** ($x=L$, exceto cantos):
+
 $$-\left(2\sqrt\beta+\frac{2}{\sqrt\beta}+\omega\right)T_{i,j} + \sqrt\beta\left(T_{i,j-1}+T_{i,j+1}\right) + \frac{2}{\sqrt\beta}\,T_{viz} = -\omega\,T_\infty$$
 
 * **Nós de canto** (convectivos nas duas direções), com $\lambda = (\theta+\omega)/2$:
+
 $$-\left(\sqrt\beta+\frac{1}{\sqrt\beta}+\lambda\right)T_{i,j} + \frac{1}{\sqrt\beta}\,T_{viz,x} + \sqrt\beta\,T_{viz,y} = -\lambda\,T_\infty$$
 
 em que $T_{viz}$ denota, em cada caso, o(s) nó(s) interno(s) vizinho(s) válido(s) (a expressão exata depende de qual quadrante do domínio o nó de canto ocupa).
@@ -79,8 +82,11 @@ Reunindo as equações de todos os $N_x \times N_y$ nós obtém-se o sistema $[A
 
 1. **Eliminação de Gauss** com pivoteamento parcial — método direto, custo $\mathcal{O}(n^3)$, robusto porém caro em memória e tempo para malhas finas;
 2. **Método de Liebmann (Gauss-Seidel)** — iterativo, aproveita a esparsidade da matriz:
+
 $$T_{i,j}^{novo} = \frac{b_{i,j} - \sum_{k} A_{i,k}\,T_k^{atual}}{A_{i,i}}$$
-3. **Liebmann com sobre-relaxação (SOR)**:
+
+1. **Liebmann com sobre-relaxação (SOR)**:
+
 $$T_{i,j}^{novo} = \omega_{relax}\,T_{i,j}^{novo} + (1-\omega_{relax})\,T_{i,j}^{antigo}, \qquad 0 < \omega_{relax} < 2.$$
 
 O **critério de convergência** adotado é o erro máximo absoluto entre iterações consecutivas em todo o domínio:
