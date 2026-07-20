@@ -1,4 +1,4 @@
-# Métodos Numéricos — Cálculo Numérico Aplicado (CNA)
+# Métodos Numéricos - Cálculo Numérico Aplicado (CNA)
 
 ![Logo UnB](logo_unb.png)
 
